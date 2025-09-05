@@ -28,5 +28,5 @@ V = len(word2Ind)
 print("Size of vocabulary: ", V)
 
 # example of word to index mapping
-print("Index of the word 'dulcinea' :  ",word2Ind['dulcinea'] )
-print("Word which has index 8097:  ",Ind2word[8096] )
+print("Index of the word 'dulcinea' :  ",word2Ind['dulcinea'])
+print("Word which has index 8097:  ",Ind2word[8096])
