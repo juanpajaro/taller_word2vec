@@ -1,2 +1,4 @@
 w2v_utils.py
 venv_word/
+__pycache__/
+elquijote.txt
