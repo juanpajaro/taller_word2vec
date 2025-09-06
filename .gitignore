@@ -3,3 +3,4 @@ venv_word/
 __pycache__/
 .vscode/
 requirements.txt
+taller_sol.py

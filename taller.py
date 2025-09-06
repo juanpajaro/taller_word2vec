@@ -9,27 +9,19 @@ from utils2 import sigmoid, get_batches, compute_pca, get_dict
 nltk.download('punkt_tab')
 nltk.data.path.append('.')
 
-with open("elquijote.txt") as f:
-    data = f.read()
-
-data = re.sub(r'[,!?;-]', '.', data) #Se remplazan signos de puntuación por puntos
-data = nltk.word_tokenize(data) #Se tokeniza el texto
-data = [word.lower() for word in data if word.isalpha()] #Se convierten las palabras a minúsculas y se eliminan los tokens que no son palabras
-print("Number of tokens:", len(data),'\n', data[20:150])
-
-# Compute the frequency distribution of the words in the dataset (vocabulary)
-fdist = nltk.FreqDist(word for word in data)
-print("Size of vocabulary: ",len(fdist) )
-print("Most frequent tokens: ",fdist.most_common(20) ) # print the 20 most frequent words and their freq.
+def cargar_datos():
+    with open("elquijote.txt") as f:
+        data = f.read()    
+    data = re.sub(r'[,!?;-]', '.', data) #Se remplazan signos de puntuación por puntos
+    data = nltk.word_tokenize(data) #Se tokeniza el texto
+    data = [word.lower() for word in data if word.isalpha()] #Se convierten las palabras a minúsculas y se eliminan los tokens que no son palabras
+    return data
 
 # get_dict creates two dictionaries, converting words to indices and viceversa.
-word2Ind, Ind2word = get_dict(data)
-V = len(word2Ind)
-print("Size of vocabulary: ", V)
-
-# example of word to index mapping
-print("Index of the word 'dulcinea' :  ",word2Ind['dulcinea'])
-print("Word which has index 8097:  ",Ind2word[8096])
+def get_dict(data):
+    word2Ind = {word: i for i, word in enumerate(set(data))}
+    Ind2word = {i: word for word, i in word2Ind.items()}
+    return word2Ind, Ind2word
 
 def initialize_model(N,V, random_seed=1):
     '''
@@ -58,16 +50,6 @@ def initialize_model(N,V, random_seed=1):
     ### END CODE HERE ###
     return W1, W2, b1, b2
 
-tmp_N = 4
-tmp_V = 10
-tmp_W1, tmp_W2, tmp_b1, tmp_b2 = initialize_model(tmp_N,tmp_V)
-assert tmp_W1.shape == ((tmp_N,tmp_V))
-assert tmp_W2.shape == ((tmp_V,tmp_N))
-print(f"tmp_W1.shape: {tmp_W1.shape}")
-print(f"tmp_W2.shape: {tmp_W2.shape}")
-print(f"tmp_b1.shape: {tmp_b1.shape}")
-print(f"tmp_b2.shape: {tmp_b2.shape}")
-
 def softmax(z):
     '''
     Inputs:
@@ -80,13 +62,6 @@ def softmax(z):
     yhat = np.exp(z)/ np.sum(np.exp(z), axis = 0)
     ### END CODE HERE ###
     return yhat
-
-# Test the function
-tmp = np.array([[1,2,3],
-                [1,1,1]
-               ])
-tmp_sm = softmax(tmp)
-print(tmp_sm)
 
 def forward_prop(x, W1, W2, b1, b2):
     '''
@@ -112,32 +87,6 @@ def forward_prop(x, W1, W2, b1, b2):
 
     return z, h
 
-# Test the function
-# Create some inputs
-tmp_N = 2
-tmp_V = 3
-tmp_x = np.array([[0,1,0]]).T
-#print(tmp_x)
-tmp_W1, tmp_W2, tmp_b1, tmp_b2 = initialize_model(N=tmp_N,V=tmp_V, random_seed=1)
-
-print(f"x has shape {tmp_x.shape}")
-print(f"N is {tmp_N} and vocabulary size V is {tmp_V}")
-
-# call function
-tmp_z, tmp_h = forward_prop(tmp_x, tmp_W1, tmp_W2, tmp_b1, tmp_b2)
-print("call forward_prop")
-print()
-# Look at output
-print(f"z has shape {tmp_z.shape}")
-print("z has values:")
-print(tmp_z)
-
-print()
-
-print(f"h has shape {tmp_h.shape}")
-print("h has values:")
-print(tmp_h)
-
 # compute_cost: cross-entropy cost function
 def compute_cost(y, yhat, batch_size):
 
@@ -146,36 +95,6 @@ def compute_cost(y, yhat, batch_size):
     cost = - 1/batch_size * np.sum(logprobs)
     cost = np.squeeze(cost)
     return cost
-
-# Test the function
-tmp_C = 2
-tmp_N = 50
-tmp_batch_size = 4
-tmp_word2Ind, tmp_Ind2word = get_dict(data)
-tmp_V = len(word2Ind)
-
-tmp_x, tmp_y = next(get_batches(data, tmp_word2Ind, tmp_V,tmp_C, tmp_batch_size))
-
-print(f"tmp_x.shape {tmp_x.shape}")
-print(f"tmp_y.shape {tmp_y.shape}")
-
-tmp_W1, tmp_W2, tmp_b1, tmp_b2 = initialize_model(tmp_N,tmp_V)
-
-print(f"tmp_W1.shape {tmp_W1.shape}")
-print(f"tmp_W2.shape {tmp_W2.shape}")
-print(f"tmp_b1.shape {tmp_b1.shape}")
-print(f"tmp_b2.shape {tmp_b2.shape}")
-
-tmp_z, tmp_h = forward_prop(tmp_x, tmp_W1, tmp_W2, tmp_b1, tmp_b2)
-print(f"tmp_z.shape: {tmp_z.shape}")
-print(f"tmp_h.shape: {tmp_h.shape}")
-
-tmp_yhat = softmax(tmp_z)
-print(f"tmp_yhat.shape: {tmp_yhat.shape}")
-
-tmp_cost = compute_cost(tmp_y, tmp_yhat, tmp_batch_size)
-print("call compute_cost")
-print(f"tmp_cost {tmp_cost:.4f}")
 
 def back_prop(x, yhat, y, h, W1, W2, b1, b2, batch_size):
     '''
@@ -204,61 +123,13 @@ def back_prop(x, yhat, y, h, W1, W2, b1, b2, batch_size):
     grad_W2 = (1/ batch_size) * np.dot((yhat - y), h.T)
 
     # compute gradient for b1
-    #grad_b1 = (1/ batch_size) * np.sum(l1, axis = 1, keepdims = True)
-    #grad_b1 = np.sum(l1, axis = 1, keepdims = True)
     grad_b1 = l1
 
     # compute gradient for b2
-    #grad_b2 = (1/ batch_size) * np.sum((yhat - y), axis = 1, keepdims = True)
-    #grad_b2 = np.sum((yhat - y), axis = 1, keepdims = True)
     grad_b2 = yhat - y
     ### END CODE HERE ####
 
     return grad_W1, grad_W2, grad_b1, grad_b2
-
-# Test the function
-tmp_C = 2
-tmp_N = 50
-tmp_batch_size = 4
-tmp_word2Ind, tmp_Ind2word = get_dict(data)
-tmp_V = len(word2Ind)
-
-# get a batch of data
-tmp_x, tmp_y = next(get_batches(data, tmp_word2Ind, tmp_V,tmp_C, tmp_batch_size))
-
-print("get a batch of data")
-print(f"tmp_x.shape {tmp_x.shape}")
-print(f"tmp_y.shape {tmp_y.shape}")
-
-print()
-print("Initialize weights and biases")
-tmp_W1, tmp_W2, tmp_b1, tmp_b2 = initialize_model(tmp_N,tmp_V)
-
-print(f"tmp_W1.shape {tmp_W1.shape}")
-print(f"tmp_W2.shape {tmp_W2.shape}")
-print(f"tmp_b1.shape {tmp_b1.shape}")
-print(f"tmp_b2.shape {tmp_b2.shape}")
-
-print()
-print("Forwad prop to get z and h")
-tmp_z, tmp_h = forward_prop(tmp_x, tmp_W1, tmp_W2, tmp_b1, tmp_b2)
-print(f"tmp_z.shape: {tmp_z.shape}")
-print(f"tmp_h.shape: {tmp_h.shape}")
-
-print()
-print("Get yhat by calling softmax")
-tmp_yhat = softmax(tmp_z)
-print(f"tmp_yhat.shape: {tmp_yhat.shape}")
-
-tmp_m = (2*tmp_C)
-tmp_grad_W1, tmp_grad_W2, tmp_grad_b1, tmp_grad_b2 = back_prop(tmp_x, tmp_yhat, tmp_y, tmp_h, tmp_W1, tmp_W2, tmp_b1, tmp_b2, tmp_batch_size)
-
-print()
-print("call back_prop")
-print(f"tmp_grad_W1.shape {tmp_grad_W1.shape}")
-print(f"tmp_grad_W2.shape {tmp_grad_W2.shape}")
-print(f"tmp_grad_b1.shape {tmp_grad_b1.shape}")
-print(f"tmp_grad_b2.shape {tmp_grad_b2.shape}")
 
 def gradient_descent(data, word2Ind, N, V, num_iters, alpha=0.03,
                      random_seed=282, initialize_model=initialize_model,
@@ -324,29 +195,107 @@ def gradient_descent(data, word2Ind, N, V, num_iters, alpha=0.03,
 
     return W1, W2, b1, b2
 
-C = 2
-N = 50
-word2Ind, Ind2word = get_dict(data)
-V = len(word2Ind)
-num_iters = 150
-print("Call gradient_descent")
-W1, W2, b1, b2 = gradient_descent(data, word2Ind, N, V, num_iters)
+if __name__ == "__main__":
 
-# visualizing the word vectors here
-import matplotlib.pyplot as plt
-#%config InlineBackend.figure_format = 'svg'
-words = ['virtud', 'malo', 'bueno', 'molino', 'dulcinea','sancho','caballero',
-         'mortal','ingratitud','memoria']
+    data = cargar_datos()
+    print("Number of tokens:", len(data),'\n', data[20:150])
 
-embs = (W1.T + W2)/2.0
+    word2Ind, Ind2word = get_dict(data)
+    V = len(word2Ind)
+    print("Size of vocabulary: ", V)
 
-# given a list of words and the embeddings, it returns a matrix with all the embeddings
-idx = [word2Ind[word] for word in words]
-X = embs[idx, :]
-print(X.shape, idx)  # X.shape:  Number of words of dimension N each
+    # example of word to index mapping
+    dulci = word2Ind['dulcinea']
+    print("Index of the word 'dulcinea' :  ",word2Ind['dulcinea'])
+    print("Word which has index 21473:  ",Ind2word[dulci])
 
-result= compute_pca(X, 2)
-plt.scatter(result[:, 0], result[:, 1])
-for i, word in enumerate(words):
-    plt.annotate(word, xy=(result[i, 0], result[i, 1]))
-plt.savefig("word_embeddings.png")
+    """
+    
+  
+    
+    
+
+    # Test the function
+    tmp_C = 2
+    tmp_N = 50
+    tmp_batch_size = 4
+    tmp_word2Ind, tmp_Ind2word = get_dict(data)
+    tmp_V = len(word2Ind)
+
+    tmp_x, tmp_y = next(get_batches(data, tmp_word2Ind, tmp_V,tmp_C, tmp_batch_size))
+
+    print(f"tmp_x.shape {tmp_x.shape}")
+    print(f"tmp_y.shape {tmp_y.shape}")
+
+    tmp_W1, tmp_W2, tmp_b1, tmp_b2 = initialize_model(tmp_N,tmp_V)
+
+    print(f"tmp_W1.shape {tmp_W1.shape}")
+    print(f"tmp_W2.shape {tmp_W2.shape}")
+    print(f"tmp_b1.shape {tmp_b1.shape}")
+    print(f"tmp_b2.shape {tmp_b2.shape}")
+
+    tmp_z, tmp_h = forward_prop(tmp_x, tmp_W1, tmp_W2, tmp_b1, tmp_b2)
+    print(f"tmp_z.shape: {tmp_z.shape}")
+    print(f"tmp_h.shape: {tmp_h.shape}")
+
+    tmp_yhat = softmax(tmp_z)
+    print(f"tmp_yhat.shape: {tmp_yhat.shape}")
+
+    tmp_cost = compute_cost(tmp_y, tmp_yhat, tmp_batch_size)
+    print("call compute_cost")
+    print(f"tmp_cost {tmp_cost:.4f}")
+
+    # Test the function
+    tmp_C = 2
+    tmp_N = 50
+    tmp_batch_size = 4
+    tmp_word2Ind, tmp_Ind2word = get_dict(data)
+    tmp_V = len(word2Ind)
+
+    # get a batch of data
+    tmp_x, tmp_y = next(get_batches(data, tmp_word2Ind, tmp_V,tmp_C, tmp_batch_size))
+
+    print("get a batch of data")
+    print(f"tmp_x.shape {tmp_x.shape}")
+    print(f"tmp_y.shape {tmp_y.shape}")
+
+    print()
+    print("Initialize weights and biases")
+    tmp_W1, tmp_W2, tmp_b1, tmp_b2 = initialize_model(tmp_N,tmp_V)
+
+    print(f"tmp_W1.shape {tmp_W1.shape}")
+    print(f"tmp_W2.shape {tmp_W2.shape}")
+    print(f"tmp_b1.shape {tmp_b1.shape}")
+    print(f"tmp_b2.shape {tmp_b2.shape}")
+
+    print()
+    print("Forwad prop to get z and h")
+    tmp_z, tmp_h = forward_prop(tmp_x, tmp_W1, tmp_W2, tmp_b1, tmp_b2)
+    print(f"tmp_z.shape: {tmp_z.shape}")
+    print(f"tmp_h.shape: {tmp_h.shape}")
+
+    print()
+    print("Get yhat by calling softmax")
+    tmp_yhat = softmax(tmp_z)
+    print(f"tmp_yhat.shape: {tmp_yhat.shape}")
+
+    tmp_m = (2*tmp_C)
+    tmp_grad_W1, tmp_grad_W2, tmp_grad_b1, tmp_grad_b2 = back_prop(tmp_x, tmp_yhat, tmp_y, tmp_h, tmp_W1, tmp_W2, tmp_b1, tmp_b2, tmp_batch_size)
+
+    print()
+    print("call back_prop")
+    print(f"tmp_grad_W1.shape {tmp_grad_W1.shape}")
+    print(f"tmp_grad_W2.shape {tmp_grad_W2.shape}")
+    print(f"tmp_grad_b1.shape {tmp_grad_b1.shape}")
+    print(f"tmp_grad_b2.shape {tmp_grad_b2.shape}")
+
+    #Test gradien descent
+    C = 2
+    N = 50
+    word2Ind, Ind2word = get_dict(data)
+    V = len(word2Ind)
+    num_iters = 150
+    print("Call gradient_descent")
+    W1, W2, b1, b2 = gradient_descent(data, word2Ind, N, V, num_iters)
+    """
+
