@@ -24,8 +24,6 @@ Estas funciones son:
 
 ## Indicaciones para construir embeddings de palabras
 
-Recomendaciones: seguir estos pasos para construir embeddings de palabras:
-
 1. **Inicialización de parámetros**: En `initialize_model`, debes crear las matrices de pesos `W1` y `W2` y los vectores de sesgo `b1` y `b2` con las dimensiones correctas. Usa inicialización aleatoria y asegúrate de que las formas sean las especificadas en los comentarios.
 
 
