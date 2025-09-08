@@ -33,7 +33,7 @@ Recomendaciones: seguir estos pasos para construir embeddings de palabras:
 
 3. **Softmax**: En la función `softmax`, normaliza la salida $z$ para obtener probabilidades.
 
-Explicación: La función softmax convierte el vector de scores $z$ en un vector de probabilidades, donde cada elemento está en el rango [0, 1] y la suma total es 1. Es útil para problemas de clasificación multiclase.
+    Explicación: La función softmax convierte el vector de scores $z$ en un vector de probabilidades, donde cada elemento está en el rango [0, 1] y la suma total es 1. Es útil para problemas de clasificación multiclase.
 
 4. **Función de costo**: En `compute_cost`, implementa la función de cross-entropy para comparar las predicciones con las etiquetas verdaderas.
 
@@ -78,4 +78,4 @@ Debes cargar un libro de tu preferencia (que hayas leído) en formato de texto p
 | Explicación de los embeddings        |  1.25   |
 | **Total**                            | **5**   |
 
-¡Mucho éxito construyendo tus propios embeddings de palabras!
+
