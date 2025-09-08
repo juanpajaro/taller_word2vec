@@ -4,7 +4,7 @@ import nltk
 from nltk.tokenize import word_tokenize
 import numpy as np
 from collections import Counter
-from utils2 import sigmoid, get_batches, compute_pca, get_dict
+from utils2 import sigmoid, get_batches, get_dict
 #nltk.download('punkt')
 nltk.download('punkt_tab')
 nltk.data.path.append('.')
@@ -17,13 +17,8 @@ def cargar_datos():
     data = [word.lower() for word in data if word.isalpha()] #Se convierten las palabras a minúsculas y se eliminan los tokens que no son palabras
     return data
 
-# get_dict creates two dictionaries, converting words to indices and viceversa.
-def get_dict(data):
-    word2Ind = {word: i for i, word in enumerate(set(data))}
-    Ind2word = {i: word for word, i in word2Ind.items()}
-    return word2Ind, Ind2word
 
-def initialize_model(N,V, random_seed=1):
+def initialize_model(N,V, random_seed=282):
     '''
     Inputs:
         N:  dimension of hidden vector
@@ -207,43 +202,7 @@ if __name__ == "__main__":
     # example of word to index mapping
     dulci = word2Ind['dulcinea']
     print("Index of the word 'dulcinea' :  ",word2Ind['dulcinea'])
-    print("Word which has index 21473:  ",Ind2word[dulci])
-
-    """
-    
-  
-    
-    
-
-    # Test the function
-    tmp_C = 2
-    tmp_N = 50
-    tmp_batch_size = 4
-    tmp_word2Ind, tmp_Ind2word = get_dict(data)
-    tmp_V = len(word2Ind)
-
-    tmp_x, tmp_y = next(get_batches(data, tmp_word2Ind, tmp_V,tmp_C, tmp_batch_size))
-
-    print(f"tmp_x.shape {tmp_x.shape}")
-    print(f"tmp_y.shape {tmp_y.shape}")
-
-    tmp_W1, tmp_W2, tmp_b1, tmp_b2 = initialize_model(tmp_N,tmp_V)
-
-    print(f"tmp_W1.shape {tmp_W1.shape}")
-    print(f"tmp_W2.shape {tmp_W2.shape}")
-    print(f"tmp_b1.shape {tmp_b1.shape}")
-    print(f"tmp_b2.shape {tmp_b2.shape}")
-
-    tmp_z, tmp_h = forward_prop(tmp_x, tmp_W1, tmp_W2, tmp_b1, tmp_b2)
-    print(f"tmp_z.shape: {tmp_z.shape}")
-    print(f"tmp_h.shape: {tmp_h.shape}")
-
-    tmp_yhat = softmax(tmp_z)
-    print(f"tmp_yhat.shape: {tmp_yhat.shape}")
-
-    tmp_cost = compute_cost(tmp_y, tmp_yhat, tmp_batch_size)
-    print("call compute_cost")
-    print(f"tmp_cost {tmp_cost:.4f}")
+    print("Word which has index 8096:  ",Ind2word[dulci])
 
     # Test the function
     tmp_C = 2
@@ -297,5 +256,5 @@ if __name__ == "__main__":
     num_iters = 150
     print("Call gradient_descent")
     W1, W2, b1, b2 = gradient_descent(data, word2Ind, N, V, num_iters)
-    """
+    
 
