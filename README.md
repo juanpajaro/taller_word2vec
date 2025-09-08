@@ -24,7 +24,7 @@ Estas funciones son:
 
 ## Indicaciones para construir embeddings de palabras
 
-Como profesor de PLN, te recomiendo seguir estos pasos para construir embeddings de palabras:
+Recomendaciones: seguir estos pasos para construir embeddings de palabras:
 
 1. **Inicialización de parámetros**: En `initialize_model`, debes crear las matrices de pesos `W1` y `W2` y los vectores de sesgo `b1` y `b2` con las dimensiones correctas. Usa inicialización aleatoria y asegúrate de que las formas sean las especificadas en los comentarios.
 
@@ -33,11 +33,11 @@ Como profesor de PLN, te recomiendo seguir estos pasos para construir embeddings
 
 3. **Softmax**: En la función `softmax`, normaliza la salida $z$ para obtener probabilidades.
 
-		 - Explicación: La función softmax convierte el vector de scores $z$ en un vector de probabilidades, donde cada elemento está en el rango [0, 1] y la suma total es 1. Es útil para problemas de clasificación multiclase.
+Explicación: La función softmax convierte el vector de scores $z$ en un vector de probabilidades, donde cada elemento está en el rango [0, 1] y la suma total es 1. Es útil para problemas de clasificación multiclase.
 
 4. **Función de costo**: En `compute_cost`, implementa la función de cross-entropy para comparar las predicciones con las etiquetas verdaderas.
 
-		 - Explicación: La función de costo de entropía cruzada mide la diferencia entre las distribuciones de probabilidad predicha y verdadera. Penaliza más los errores en las predicciones de alta confianza.
+    Explicación: La función de costo de entropía cruzada mide la diferencia entre las distribuciones de probabilidad predicha y verdadera. Penaliza más los errores en las predicciones de alta confianza.
 
 5. **Entrenamiento**: Usa la función `gradient_descent` para actualizar los parámetros del modelo usando los gradientes calculados en `back_prop`.
 
