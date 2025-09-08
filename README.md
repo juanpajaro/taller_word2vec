@@ -30,23 +30,42 @@ Como profesor de PLN, te recomiendo seguir estos pasos para construir embeddings
 
 
 2. **Propagación hacia adelante**: En `forward_prop`, implementa el cálculo del vector oculto `h` y la salida `z` usando las matrices y vectores inicializados. Aplica la función de activación ReLU sobre `h`.
-	 - Fórmulas matemáticas:
-		 - Cálculo del vector oculto:
-			 $$ h = \text{ReLU}(W_1 x + b_1) $$
-		 - Cálculo de la salida:
-			 $$ z = W_2 h + b_2 $$
-		 - Donde $W_1$ y $W_2$ son matrices de pesos, $b_1$ y $b_2$ son vectores de sesgo, $x$ es el vector de entrada (contexto), y ReLU es la función de activación $\text{ReLU}(a) = \max(0, a)$.
+
+		 - **Fórmulas matemáticas:**
+			 - Cálculo del vector oculto:
+       
+				 ```math
+				 h = \text{ReLU}(W_1 x + b_1)
+				 ```
+			 - Cálculo de la salida:
+       
+				 ```math
+				 z = W_2 h + b_2
+				 ```
+			 - Donde $W_1$ y $W_2$ son matrices de pesos, $b_1$ y $b_2$ son vectores de sesgo, $x$ es el vector de entrada (contexto), y ReLU es la función de activación:
+       
+				 ```math
+				 	ext{ReLU}(a) = \max(0, a)
+				 ```
 
 3. **Softmax**: En la función `softmax`, normaliza la salida $z$ para obtener probabilidades.
-	 - Fórmula matemática:
-		 $$ \text{softmax}(z_i) = \frac{e^{z_i}}{\sum_j e^{z_j}} $$
-	 - Explicación: La función softmax convierte el vector de scores $z$ en un vector de probabilidades, donde cada elemento está en el rango [0, 1] y la suma total es 1. Es útil para problemas de clasificación multiclase.
+
+		 - **Fórmula matemática:**
+     
+			 ```math
+			 	ext{softmax}(z_i) = \frac{e^{z_i}}{\sum_j e^{z_j}}
+			 ```
+		 - Explicación: La función softmax convierte el vector de scores $z$ en un vector de probabilidades, donde cada elemento está en el rango [0, 1] y la suma total es 1. Es útil para problemas de clasificación multiclase.
 
 4. **Función de costo**: En `compute_cost`, implementa la función de cross-entropy para comparar las predicciones con las etiquetas verdaderas.
-	 - Fórmula matemática:
-		 $$ J = -\frac{1}{m} \sum_{i=1}^m \sum_{j=1}^V y_{ij} \log(\hat{y}_{ij}) $$
-		 donde $m$ es el tamaño del batch, $V$ es el tamaño del vocabulario, $y_{ij}$ es la etiqueta verdadera (one-hot), y $\hat{y}_{ij}$ es la probabilidad predicha por softmax.
-	 - Explicación: La función de costo de entropía cruzada mide la diferencia entre las distribuciones de probabilidad predicha y verdadera. Penaliza más los errores en las predicciones de alta confianza.
+
+		 - **Fórmula matemática:**
+     
+			 ```math
+			 J = -\frac{1}{m} \sum_{i=1}^m \sum_{j=1}^V y_{ij} \log(\hat{y}_{ij})
+			 ```
+			 donde $m$ es el tamaño del batch, $V$ es el tamaño del vocabulario, $y_{ij}$ es la etiqueta verdadera (one-hot), y $\hat{y}_{ij}$ es la probabilidad predicha por softmax.
+		 - Explicación: La función de costo de entropía cruzada mide la diferencia entre las distribuciones de probabilidad predicha y verdadera. Penaliza más los errores en las predicciones de alta confianza.
 
 5. **Entrenamiento**: Usa la función `gradient_descent` para actualizar los parámetros del modelo usando los gradientes calculados en `back_prop`.
 
