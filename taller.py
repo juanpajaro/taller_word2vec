@@ -31,16 +31,16 @@ def initialize_model(N,V, random_seed=282):
     ### START CODE HERE (Replace instances of 'None' with your code) ###
     np.random.seed(random_seed)
     # W1 has shape (N,V)
-    W1 = np.random.rand(N, V)
+    W1 = None
 
     # W2 has shape (V,N)
-    W2 = np.random.rand(V, N)
+    W2 = None
 
     # b1 has shape (N,1)
-    b1 = np.random.rand(N, 1)
+    b1 = None
 
     # b2 has shape (V,1)
-    b2 = np.random.rand(V, 1)
+    b2 = None
 
     ### END CODE HERE ###
     return W1, W2, b1, b2
@@ -54,7 +54,7 @@ def softmax(z):
     '''
     ### START CODE HERE (Replace instances of 'None' with your own code) ###
     # Calculate yhat (softmax)
-    yhat = np.exp(z)/ np.sum(np.exp(z), axis = 0)
+    yhat = None
     ### END CODE HERE ###
     return yhat
 
@@ -69,14 +69,14 @@ def forward_prop(x, W1, W2, b1, b2):
 
     ### START CODE HERE (Replace instances of 'None' with your own code) ###
     # Calculate h
-    h = np.dot(W1, x) + b1
+    h = None
 
     # Apply the relu on h,
     # store the relu in h
-    h = np.maximum(0, h)
+    h = None
 
     # Calculate z
-    z = np.dot(W2, h) + b2
+    z = None
 
     ### END CODE HERE ###
 
@@ -85,9 +85,10 @@ def forward_prop(x, W1, W2, b1, b2):
 # compute_cost: cross-entropy cost function
 def compute_cost(y, yhat, batch_size):
 
-    # cost function
-    logprobs = np.multiply(np.log(yhat),y)  + np.multiply(np.log(1 - yhat), 1 - y)
-    cost = - 1/batch_size * np.sum(logprobs)
+    ### START CODE HERE (Replace instances of 'None' with your own code) ###
+    logprobs = None
+    cost = - None
+    ### END CODE HERE ###
     cost = np.squeeze(cost)
     return cost
 

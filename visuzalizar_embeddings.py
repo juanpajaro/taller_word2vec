@@ -14,8 +14,10 @@ def embedding_vectors(N=300):
 
     words = ['virtud', 'malo', 'bueno', 'molino', 'dulcinea','sancho','caballero',
             'mortal','ingratitud','memoria']
-
-    embs = (W1.T + W2)/2.0
+    
+    ### START CODE HERE (Replace instances of 'None' with your code) ###
+    embs = None
+    ### END CODE HERE ###
     print(embs.shape)  # embs.shape:  (23424, 50)
     print(embs[:1, :])  # First 1 word embeddings
 
